@@ -29,7 +29,7 @@ async function migrate() {
             content TEXT NOT NULL,
             senderId TEXT NOT NULL,
             senderName TEXT NOT NULL,
-            towerId TEXT NOT NULL DEFAULT 'main',
+            towerId TEXT NOT NULL DEFAULT 'global',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `);
