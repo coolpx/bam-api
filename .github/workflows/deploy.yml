@@ -15,7 +15,7 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: '20'
+                  node-version: '22'
 
             - name: Install pnpm
               run: npm install -g pnpm
@@ -44,6 +44,7 @@ jobs:
                       export NVM_DIR="$HOME/.nvm"
                       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
                       nvm use 22
+                      export PATH="$HOME/.local/share/pnpm:$PATH"
                       cd ~/bam-api
                       pnpm install --prod
                       pm2 restart bam-api || pm2 start dist/index.js --name bam-api
