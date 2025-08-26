@@ -41,6 +41,9 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20
             cd ~/bam-api
             pnpm install --prod
             pm2 restart bam-api || pm2 start dist/index.js --name bam-api
