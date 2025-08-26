@@ -34,9 +34,16 @@ const incrementTower: Endpoint = {
     async handler(req, res) {
         const { towerId, amount } = req.params;
         const db = await getTowerDb();
+        const id = towerId || 'main';
+        // Ensure the row exists
+        await db.run(
+            'INSERT INTO tower (towerId, unsigned) VALUES (?, 0) ON CONFLICT(towerId) DO NOTHING',
+            [id]
+        );
+        // Now increment
         await db.run(
             'UPDATE tower SET unsigned = unsigned + ? WHERE towerId = ?',
-            [amount, towerId || 'main']
+            [amount, id]
         );
         res.sendStatus(204);
     }
