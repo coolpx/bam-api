@@ -1,13 +1,10 @@
-
 import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-
 const dataDir = path.join(process.cwd(), 'data');
 const dbPath = path.join(dataDir, 'bam.db');
-
 
 async function migrate() {
     // Ensure data directory exists
