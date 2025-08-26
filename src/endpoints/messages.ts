@@ -8,7 +8,10 @@ const towerDbPath = path.join(process.cwd(), 'data', 'bam.db');
 let towerDbPromise: Promise<any> | null = null;
 function getTowerDb() {
     if (!towerDbPromise) {
-        towerDbPromise = open({ filename: towerDbPath, driver: sqlite3.Database });
+        towerDbPromise = open({
+            filename: towerDbPath,
+            driver: sqlite3.Database
+        });
     }
     return towerDbPromise;
 }
@@ -22,7 +25,13 @@ const postMessage: Endpoint = {
         const db = await getTowerDb();
         await db.run(
             'INSERT INTO messages (content, id, senderId, senderName, towerId) VALUES (?, ?, ?, ?, ?)',
-            [content, crypto.randomUUID(), senderId, senderName, towerId || 'main']
+            [
+                content,
+                crypto.randomUUID(),
+                senderId,
+                senderName,
+                towerId || 'main'
+            ]
         );
         res.sendStatus(204);
     }

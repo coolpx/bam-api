@@ -1,49 +1,49 @@
 name: Deploy to DigitalOcean
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+            - name: Install pnpm
+              run: npm install -g pnpm
 
-      - name: Build project
-        run: |
-          pnpm install
-          pnpm run build
+            - name: Build project
+              run: |
+                  pnpm install
+                  pnpm run build
 
-      - name: Copy files to droplet via SSH
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DROPLET_HOST }}
-          username: ${{ secrets.DROPLET_USER }}
-          key: ${{ secrets.DROPLET_SSH_KEY }}
-          source: "./dist/*,./package.json,./pnpm-lock.yaml"
-          target: "~/bam-api"
+            - name: Copy files to droplet via SSH
+              uses: appleboy/scp-action@v0.1.7
+              with:
+                  host: ${{ secrets.DROPLET_HOST }}
+                  username: ${{ secrets.DROPLET_USER }}
+                  key: ${{ secrets.DROPLET_SSH_KEY }}
+                  source: './dist/*,./package.json,./pnpm-lock.yaml'
+                  target: '~/bam-api'
 
-      - name: SSH and restart app
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DROPLET_HOST }}
-          username: ${{ secrets.DROPLET_USER }}
-          key: ${{ secrets.DROPLET_SSH_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm use 20
-            cd ~/bam-api
-            pnpm install --prod
-            pm2 restart bam-api || pm2 start dist/index.js --name bam-api
+            - name: SSH and restart app
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.DROPLET_HOST }}
+                  username: ${{ secrets.DROPLET_USER }}
+                  key: ${{ secrets.DROPLET_SSH_KEY }}
+                  script: |
+                      export NVM_DIR="$HOME/.nvm"
+                      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                      nvm use 22
+                      cd ~/bam-api
+                      pnpm install --prod
+                      pm2 restart bam-api || pm2 start dist/index.js --name bam-api

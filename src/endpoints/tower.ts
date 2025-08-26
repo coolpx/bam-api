@@ -7,7 +7,10 @@ const towerDbPath = path.join(process.cwd(), 'data', 'bam.db');
 let towerDbPromise: Promise<any> | null = null;
 function getTowerDb() {
     if (!towerDbPromise) {
-        towerDbPromise = open({ filename: towerDbPath, driver: sqlite3.Database });
+        towerDbPromise = open({
+            filename: towerDbPath,
+            driver: sqlite3.Database
+        });
     }
     return towerDbPromise;
 }
@@ -18,7 +21,9 @@ const getTower: Endpoint = {
     async handler(req, res) {
         const { towerId } = req.params;
         const db = await getTowerDb();
-        const blocks = await db.all('SELECT * FROM tower WHERE towerId = ?', [towerId || 'main']);
+        const blocks = await db.all('SELECT * FROM tower WHERE towerId = ?', [
+            towerId || 'main'
+        ]);
         res.json(blocks.length ? blocks[0].unsigned : 0);
     }
 };
@@ -29,7 +34,10 @@ const incrementTower: Endpoint = {
     async handler(req, res) {
         const { towerId, amount } = req.params;
         const db = await getTowerDb();
-        await db.run('UPDATE tower SET unsigned = unsigned + ? WHERE towerId = ?', [amount, towerId || 'main']);
+        await db.run(
+            'UPDATE tower SET unsigned = unsigned + ? WHERE towerId = ?',
+            [amount, towerId || 'main']
+        );
         res.sendStatus(204);
     }
 };
