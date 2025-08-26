@@ -1,10 +1,19 @@
+
 import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 import path from 'path';
+import fs from 'fs';
 
-const dbPath = path.join(process.cwd(), 'data', 'bam.db');
+
+const dataDir = path.join(process.cwd(), 'data');
+const dbPath = path.join(dataDir, 'bam.db');
+
 
 async function migrate() {
+    // Ensure data directory exists
+    if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+    }
     const db = await open({ filename: dbPath, driver: sqlite3.Database });
 
     // Create or update the tower table
