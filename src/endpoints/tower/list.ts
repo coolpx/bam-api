@@ -5,8 +5,23 @@ const endpoint: Endpoint = {
     url: '/v2/tower/list',
     method: 'get',
     async handler(req, res) {
+        const { sort, owner } = req.query;
+
+        // Default sort is mostBricks
+        let orderBy: any = { bricks: 'desc' };
+        if (sort === 'mostPlayers') {
+            orderBy = { playerCount: 'desc' };
+        }
+
+        // Optional filter by owner
+        const where: any = {};
+        if (owner) {
+            where.ownerId = owner;
+        }
+
         const towers = await prisma.tower.findMany({
-            orderBy: { bricks: 'desc' },
+            where,
+            orderBy,
             take: 10
         });
 
