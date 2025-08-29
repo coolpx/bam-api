@@ -16,7 +16,7 @@ const endpoint: Endpoint = {
         // Optional filter by owner
         const where: any = {};
         if (owner) {
-            where.ownerId = owner;
+            where.ownerId = parseInt(owner.toString());
         }
 
         const towers = await prisma.tower.findMany({
