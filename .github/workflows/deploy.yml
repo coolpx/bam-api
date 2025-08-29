@@ -9,42 +9,47 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: '22'
-
-            - name: Install pnpm
-              run: npm install -g pnpm
-
-            - name: Build project
-              run: |
-                  pnpm install
-                  pnpm run build
-
-            - name: Copy files to droplet via SSH
-              uses: appleboy/scp-action@v0.1.7
-              with:
-                  host: ${{ secrets.DROPLET_HOST }}
-                  username: ${{ secrets.DROPLET_USER }}
-                  key: ${{ secrets.DROPLET_SSH_KEY }}
-                  source: './dist/*,./package.json,./pnpm-lock.yaml'
-                  target: '~/bam-api'
-
-            - name: SSH and restart app
+            - name: SSH to VPS and deploy
               uses: appleboy/ssh-action@v1.0.3
               with:
                   host: ${{ secrets.DROPLET_HOST }}
                   username: ${{ secrets.DROPLET_USER }}
                   key: ${{ secrets.DROPLET_SSH_KEY }}
                   script: |
+                      set -euo pipefail
+
+                      # Load nvm if available and ensure Node 22
                       export NVM_DIR="$HOME/.nvm"
-                      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                      nvm use 22
+                      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                      if command -v nvm >/dev/null 2>&1; then
+                        nvm install 22
+                        nvm use 22
+                      fi
+
+                      # Ensure pnpm is available (use corepack if present)
                       export PATH="$HOME/.local/share/pnpm:$PATH"
-                      cd ~/bam-api
-                      pnpm install --prod
-                      pm2 restart bam-api || pm2 start dist/index.js --name bam-api
+                      if ! command -v pnpm >/dev/null 2>&1; then
+                        if command -v corepack >/dev/null 2>&1; then
+                          corepack enable
+                          corepack prepare pnpm@latest --activate
+                        else
+                          npm i -g pnpm
+                        fi
+                      fi
+
+                      # Ensure repository directory exists and pull latest
+                      cd ~/bam-api || (mkdir -p ~/bam-api && cd ~/bam-api)
+                      git fetch origin main
+                      git reset --hard origin/main
+
+                      # Install dependencies and build
+                      pnpm install --frozen-lockfile
+                      pnpm run build
+
+                      # Apply Prisma migrations in production (safe no-op if none)
+                      if [ -d prisma ]; then
+                        pnpm prisma migrate deploy || npx prisma migrate deploy
+                      fi
+
+                      # Restart app with pm2 (start if not running)
+                      pm2 reload bam-api || pm2 start dist/index.js --name bam-api

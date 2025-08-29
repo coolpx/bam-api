@@ -7,7 +7,7 @@ const endpoint: Endpoint = {
     async handler(req, res) {
         const { towerId, amount } = req.params;
 
-        if (!amount || typeof amount !== 'number') {
+        if (!amount || !parseInt(amount)) {
             return res.json({ success: false, error: 'Invalid amount' });
         }
 
@@ -17,7 +17,7 @@ const endpoint: Endpoint = {
             },
             data: {
                 bricks: {
-                    increment: amount
+                    increment: parseInt(amount)
                 }
             }
         });
