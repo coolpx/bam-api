@@ -1,7 +1,7 @@
 import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 import path from 'path';
-import { Endpoint } from '../types';
+import { Endpoint } from '../../types';
 
 const towerDbPath = path.join(process.cwd(), 'data', 'bam.db');
 let towerDbPromise: Promise<any> | null = null;

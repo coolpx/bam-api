@@ -2,23 +2,23 @@ import { open } from 'sqlite';
 import { Database } from 'sqlite3';
 import path from 'path';
 import process from 'process';
-import { isValidBamStat } from '../modules/stats';
-import { Endpoint } from '../types';
+import { isValidBamStat } from '../../modules/stats';
+import { Endpoint } from '../../types';
 
 const endpoint: Endpoint = {
-    url: '/bam/getSorted/:stat/:amount',
+    url: '/bam/getUserRank/:stat/:userId',
     method: 'get',
     async handler(req, res) {
         // get and validate parameters
-        const { stat, amount } = req.params;
+        const { stat, userId } = req.params;
 
         if (!stat || !isValidBamStat(stat)) {
             res.status(400).json({ error: 'Stat is invalid' });
             return;
         }
 
-        if (!amount || !/^[0-9]+$/.test(amount)) {
-            res.status(400).json({ error: 'Amount is invalid' });
+        if (!userId || !/^[0-9]+$/.test(userId)) {
+            res.status(400).json({ error: 'User ID is invalid' });
             return;
         }
 
@@ -28,17 +28,17 @@ const endpoint: Endpoint = {
             driver: Database
         });
 
-        // read top N users from database
-        const rows = await database.all(
-            `SELECT * FROM ${stat} ORDER BY amount DESC LIMIT ?`,
-            amount
+        // get user rank from database
+        const [row] = await database.all(
+            `SELECT ROW_NUMBER() OVER (ORDER BY amount DESC) AS rank FROM ${stat} WHERE userId = ?`,
+            userId
         );
 
         // close database
         await database.close();
 
         // send response
-        res.json({ success: true, data: rows });
+        res.json({ success: true, rank: row ? row.rank : null });
     }
 };
 

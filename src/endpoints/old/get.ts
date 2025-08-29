@@ -2,15 +2,15 @@ import { open } from 'sqlite';
 import { Database } from 'sqlite3';
 import path from 'path';
 import process from 'process';
-import { isValidBamStat } from '../modules/stats';
-import { Endpoint } from '../types';
+import { isValidBamStat } from '../../modules/stats';
+import { Endpoint } from '../../types';
 
 const endpoint: Endpoint = {
-    url: '/bam/:userId/set/:stat/:value',
+    url: '/bam/:userId/get/:stat',
     method: 'get',
     async handler(req, res) {
         // get and validate parameters
-        const { userId, stat, value } = req.params;
+        const { userId, stat } = req.params;
 
         if (!userId || !/^[0-9]+$/.test(userId)) {
             res.status(400).json({ error: 'User ID is invalid' });
@@ -20,10 +20,6 @@ const endpoint: Endpoint = {
             res.status(400).json({ error: 'Stat is invalid' });
             return;
         }
-        if (!value || !/^[0-9]+$/.test(value)) {
-            res.status(400).json({ error: 'Value is invalid' });
-            return;
-        }
 
         // open database
         const database = await open({
@@ -31,19 +27,22 @@ const endpoint: Endpoint = {
             driver: Database
         });
 
-        // update database
-        await database.run(
-            `INSERT INTO ${stat} (userId, amount) VALUES (?, ?) ON CONFLICT(userId) DO UPDATE SET amount = ?`,
-            userId,
-            value,
-            value
+        // read from database
+        const [row] = await database.all(
+            `SELECT * FROM ${stat} WHERE userId = ?`,
+            userId
         );
 
         // close database
         await database.close();
 
         // send response
-        res.json({ success: true });
+        if (!row) {
+            res.json({ success: true, value: 0 });
+            return;
+        }
+
+        res.json({ success: true, value: row.amount });
     }
 };
 

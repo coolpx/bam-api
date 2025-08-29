@@ -8,7 +8,9 @@ app.use(express.json());
 
 const endpointsDir = path.join(__dirname, 'endpoints');
 // Dynamically import all endpoint modules (supporting default export as Endpoint or Endpoint[])
-fs.readdirSync(endpointsDir).forEach((file) => {
+fs.readdirSync(endpointsDir, { recursive: true }).forEach((file) => {
+    if (typeof file !== 'string') file = file.toString();
+
     if (file.endsWith('.js')) {
         const endpointModule = require(path.join(endpointsDir, file));
         let endpoints = endpointModule.default || endpointModule;
@@ -23,6 +25,12 @@ fs.readdirSync(endpointsDir).forEach((file) => {
                 app[endpoint.method](endpoint.url, endpoint.handler);
                 console.log(
                     `Registered endpoint: [${endpoint.method.toUpperCase()}] ${
+                        endpoint.url
+                    }`
+                );
+            } else {
+                console.error(
+                    `Invalid endpoint: [${endpoint.method.toUpperCase()}] ${
                         endpoint.url
                     }`
                 );

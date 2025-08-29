@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tower {
+  id        String   @id @unique @default(uuid())
+  ownerId   Int      @default(0)
+  name      String
+  bricks    Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id         String   @id @unique @default(uuid())
+  content    String
+  senderId   Int
+  senderName String
+  createdAt  DateTime @default(now())
+}
+
+model PlayerLeaderboardStats {
+  userId         Int @id @unique
+  playtime       Int @default(0)
+  placedBricks   Int @default(0)
+  rareBricks     Int @default(0)
+  layersComplete Int @default(0)
+  money          Int @default(0)
+}
