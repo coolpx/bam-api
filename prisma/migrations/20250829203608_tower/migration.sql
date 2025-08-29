@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "public"."Tower" ADD COLUMN     "playerCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "playerCountUpdated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
