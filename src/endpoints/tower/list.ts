@@ -13,19 +13,31 @@ const endpoint: Endpoint = {
             orderBy = { playerCount: 'desc' };
         }
 
-        // Optional filter by owner
+        // Optional filter by owner (comma-separated list of user IDs)
         const where: any = {};
         if (owner) {
-            where.ownerId = parseInt(owner.toString());
+            const ownerIds = owner
+                .toString()
+                .split(',')
+                .map((id) => parseInt(id.trim()))
+                .filter((id) => !isNaN(id));
+            if (ownerIds.length > 0) {
+                where.ownerId = { in: ownerIds };
+            }
         }
 
-        const towers = (
-            await prisma.tower.findMany({
-                where,
-                orderBy,
-                take: 10
-            })
-        ).map((tower) => {
+        // Set take limit: no limit when filtering by owner
+        let take: number | undefined = 10;
+        if (where.ownerId) {
+            take = undefined;
+        }
+
+        const options: any = { where, orderBy };
+        if (take !== undefined) {
+            options.take = take;
+        }
+
+        const towers = (await prisma.tower.findMany(options)).map((tower) => {
             if (
                 tower.id != 'main' &&
                 tower.playersUpdated < new Date(Date.now() - 10 * 1000)
