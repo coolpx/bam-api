@@ -13,7 +13,10 @@ const endpoint: Endpoint = {
 
         const tower = await prisma.tower.update({
             where: { id },
-            data: { playerCount: parseInt(playerCount) }
+            data: {
+                playerCount: parseInt(playerCount),
+                playerCountUpdated: new Date()
+            }
         });
 
         res.json({ success: true, tower });

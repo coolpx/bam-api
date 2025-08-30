@@ -19,10 +19,17 @@ const endpoint: Endpoint = {
             where.ownerId = parseInt(owner.toString());
         }
 
-        const towers = await prisma.tower.findMany({
-            where,
-            orderBy,
-            take: 10
+        const towers = (
+            await prisma.tower.findMany({
+                where,
+                orderBy,
+                take: 10
+            })
+        ).map((tower) => {
+            if (tower.playerCountUpdated < new Date(Date.now() - 10 * 1000)) {
+                tower.playerCount = 0;
+            }
+            return tower;
         });
 
         res.json({ success: true, towers });
