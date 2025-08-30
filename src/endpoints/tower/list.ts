@@ -26,7 +26,10 @@ const endpoint: Endpoint = {
                 take: 10
             })
         ).map((tower) => {
-            if (tower.playerCountUpdated < new Date(Date.now() - 10 * 1000)) {
+            if (
+                tower.id != 'main' &&
+                tower.playerCountUpdated < new Date(Date.now() - 10 * 1000)
+            ) {
                 tower.playerCount = 0;
             }
             return tower;
