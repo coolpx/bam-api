@@ -16,6 +16,7 @@ model Tower {
     createdAt      DateTime @default(now())
     players        String   @default("")
     playersUpdated DateTime @default(now())
+    playerCount    Int      @default(0)
 }
 
 model Message {
