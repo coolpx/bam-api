@@ -11,11 +11,17 @@ const endpoint: Endpoint = {
             data: {
                 id,
                 name,
-                ownerId
+                ownerId: BigInt(ownerId)
             }
         });
 
-        res.json({ success: true, tower });
+        res.json({ 
+            success: true, 
+            tower: {
+                ...tower,
+                ownerId: tower.ownerId.toString()
+            }
+        });
     }
 };
 

@@ -21,7 +21,13 @@ const endpoint: Endpoint = {
             }
         });
 
-        res.json({ success: true, tower });
+        res.json({ 
+            success: true, 
+            tower: {
+                ...tower,
+                ownerId: tower.ownerId.toString()
+            }
+        });
     }
 };
 

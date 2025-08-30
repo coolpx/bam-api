@@ -13,7 +13,12 @@ const endpoint: Endpoint = {
             }
         });
 
-        res.json({ success: true, messages });
+        const formattedMessages = messages.map(msg => ({
+            ...msg,
+            senderId: msg.senderId.toString()
+        }));
+
+        res.json({ success: true, messages: formattedMessages });
     }
 };
 

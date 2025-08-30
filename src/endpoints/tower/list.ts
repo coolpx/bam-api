@@ -50,7 +50,10 @@ const endpoint: Endpoint = {
             ) {
                 tower.players = '';
             }
-            return tower;
+            return {
+                ...tower,
+                ownerId: tower.ownerId.toString()
+            };
         });
 
         res.json({ success: true, towers });

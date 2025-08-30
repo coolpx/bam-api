@@ -19,7 +19,13 @@ const endpoint: Endpoint = {
             data: { content, senderId: BigInt(senderId), senderName }
         });
 
-        res.json({ success: true, message });
+        res.json({ 
+            success: true, 
+            message: {
+                ...message,
+                senderId: message.senderId.toString()
+            }
+        });
     }
 };
 

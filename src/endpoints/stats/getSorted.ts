@@ -26,7 +26,13 @@ const endpoint: Endpoint = {
             }
         });
 
-        res.json({ success: true, sortedStats });
+        res.json({ 
+            success: true, 
+            sortedStats: sortedStats.map(s => ({
+                userId: String(s.userId),
+                [stat]: s[stat as keyof typeof s]
+            }))
+        });
     }
 };
 
