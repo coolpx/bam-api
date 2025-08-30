@@ -13,7 +13,7 @@ const endpoint: Endpoint = {
             }
         });
 
-        const formattedMessages = messages.map(msg => ({
+        const formattedMessages = messages.map((msg) => ({
             ...msg,
             senderId: msg.senderId.toString()
         }));

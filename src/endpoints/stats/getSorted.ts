@@ -26,9 +26,9 @@ const endpoint: Endpoint = {
             }
         });
 
-        res.json({ 
-            success: true, 
-            sortedStats: sortedStats.map(s => ({
+        res.json({
+            success: true,
+            sortedStats: sortedStats.map((s) => ({
                 userId: String(s.userId),
                 [stat]: s[stat as keyof typeof s]
             }))
