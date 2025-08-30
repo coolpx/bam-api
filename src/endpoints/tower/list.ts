@@ -19,8 +19,14 @@ const endpoint: Endpoint = {
             const ownerIds = owner
                 .toString()
                 .split(',')
-                .map((id) => parseInt(id.trim()))
-                .filter((id) => !isNaN(id));
+                .map((id) => {
+                    try {
+                        return BigInt(id.trim());
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((id) => id !== null) as bigint[];
             if (ownerIds.length > 0) {
                 where.ownerId = { in: ownerIds };
             }

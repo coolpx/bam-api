@@ -10,7 +10,7 @@ datasource db {
 
 model Tower {
     id             String   @id @unique @default(uuid())
-    ownerId        Int      @default(0)
+    ownerId        BigInt   @default(0)
     name           String
     bricks         Int      @default(0)
     createdAt      DateTime @default(now())
