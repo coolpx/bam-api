@@ -7,8 +7,16 @@ const endpoint: Endpoint = {
     async handler(req, res) {
         const { content, senderId, senderName } = req.body;
 
+        if (!content || !senderId || !senderName) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid parameters'
+            });
+            return;
+        }
+
         const message = await prisma.message.create({
-            data: { content, senderId, senderName }
+            data: { content, senderId: BigInt(senderId), senderName }
         });
 
         res.json({ success: true, message });

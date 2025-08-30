@@ -16,7 +16,7 @@ const endpoint: Endpoint = {
         }
 
         const stats = await prisma.playerLeaderboardStats.findUnique({
-            where: { userId: parseInt(userId) }
+            where: { userId: BigInt(userId) }
         });
 
         res.json(

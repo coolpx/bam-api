@@ -22,16 +22,16 @@ model Tower {
 model Message {
     id         String   @id @unique @default(uuid())
     content    String
-    senderId   Int
+    senderId   BigInt
     senderName String
     createdAt  DateTime @default(now())
 }
 
 model PlayerLeaderboardStats {
-    userId         Int @id @unique
-    playtime       Int @default(0)
-    placedBricks   Int @default(0)
-    rareBricks     Int @default(0)
-    layersComplete Int @default(0)
-    money          Int @default(0)
+    userId         BigInt @id @unique
+    playtime       Int    @default(0)
+    placedBricks   Int    @default(0)
+    rareBricks     Int    @default(0)
+    layersComplete Int    @default(0)
+    money          Int    @default(0)
 }

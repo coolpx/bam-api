@@ -24,7 +24,7 @@ const endpoint: Endpoint = {
         }
 
         await prisma.playerLeaderboardStats.update({
-            where: { userId: parseInt(userId) },
+            where: { userId: BigInt(userId) },
             data: { [stat]: amount }
         });
 
