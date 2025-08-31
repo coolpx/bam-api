@@ -37,9 +37,9 @@ const endpoint: Endpoint = {
 
         res.json({
             success: true,
-            sortedStats: sortedStats.map((s) => ({
-                userId: String(s.userId),
-                [stat]: s[stat as keyof typeof s]
+            data: sortedStats.map((s) => ({
+                key: s.userId,
+                value: s[stat as keyof typeof s]
             }))
         });
     }
