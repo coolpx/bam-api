@@ -3,7 +3,7 @@ import { isValidBamStat } from '../../modules/stats';
 import { Endpoint } from '../../types';
 
 const endpoint: Endpoint = {
-    url: '/v2/stats/:userId/:stat',
+    url: '/v2/stats/get/:userId/:stat',
     method: 'get',
     async handler(req, res) {
         const { userId, stat } = req.params;
