@@ -7,7 +7,7 @@ const endpoint: Endpoint = {
     async handler(req, res) {
         const { towerId, amount } = req.params;
 
-        if (!amount || !parseInt(amount)) {
+        if (!amount || isNaN(parseInt(amount))) {
             return res.json({ success: false, error: 'Invalid amount' });
         }
 

@@ -13,8 +13,8 @@ const endpoint: Endpoint = {
             !userId ||
             !stat ||
             !isValidBamStat(stat) ||
-            !amount ||
-            typeof amount !== 'number'
+            typeof amount !== 'number' ||
+            isNaN(amount)
         ) {
             res.status(400).json({
                 success: false,
