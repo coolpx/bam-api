@@ -23,9 +23,10 @@ const endpoint: Endpoint = {
             return;
         }
 
-        await prisma.playerLeaderboardStats.update({
+        await prisma.playerLeaderboardStats.upsert({
             where: { userId: BigInt(userId) },
-            data: { [stat]: amount }
+            update: { [stat]: amount },
+            create: { userId: BigInt(userId), [stat]: amount }
         });
 
         res.json({ success: true });
