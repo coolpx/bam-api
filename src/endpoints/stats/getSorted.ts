@@ -21,7 +21,7 @@ const endpoint: Endpoint = {
         if (!amount || !parseInt(amount.toString())) {
             take = 50;
         } else {
-            take = parseInt(amount.toString());
+            take = Math.max(1, parseInt(amount.toString()));
         }
 
         const sortedStats = await prisma.playerLeaderboardStats.findMany({
