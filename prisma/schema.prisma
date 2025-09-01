@@ -34,4 +34,5 @@ model PlayerLeaderboardStats {
     rareBricks     Int    @default(0)
     layersComplete Int    @default(0)
     money          Int    @default(0)
+    rebirths       Int    @default(0)
 }

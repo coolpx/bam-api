@@ -5,7 +5,8 @@ export const BAM_STATS = [
     'placedBricks',
     'rareBricks',
     'layersComplete',
-    'money'
+    'money',
+    'rebirths'
 ];
 
 export function isValidBamStat(stat: string): boolean {
